@@ -1,0 +1,29 @@
+ Consumer Key (API Key) 3IH7ok1kZyINT9ryIqIhn5qN2
+Consumer Secret (API Secret) 6svfqUzY0qayZ25qFAkaWEMRVMCP8fqSuQ2UTGwbz0Xpd1vcne 
+ Access Token 45173108-uVf7aorbNFFtBpa75x4JkiI9x34HA0jTvDyf1kWVo
+Access Token Secret sQmTI7BEnvm2vLEWvWQzVLr0ubsmanS9EVfLJnH3pk9st 
+
+
+FLUME_LOG_DIR=/var/log/flume-ng
+FLUME_CONF_DIR=/etc/flume-ng/conf
+FLUME_RUN_DIR=/var/run/flume-ng
+FLUME_HOME=/usr/lib/flume-ng
+FLUME_USER=flume
+
+
+
+50070
+
+import org.apache.avro.Schema
+
+val schema = new Schema.Parser().parse(new File("user.avsc"))
+
+sqlContext.read.format("com.databricks.spark.avro").load("hdfs://quickstart.cloudera:8020/user/flume/tweets").show()
+
+
+        CREATE EXTERNAL TABLE  Tweets 
+    ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+    STORED AS INPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+    OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+	LOCATION               '/user/flume/tweets/' 
+    TBLPROPERTIES ('avro.schema.url'='hdfs://quickstart.cloudera:8020/user/flume/tweets/tweet_def.avsc');
